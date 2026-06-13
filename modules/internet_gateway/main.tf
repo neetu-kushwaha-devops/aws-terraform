@@ -1,7 +1,10 @@
-# Skeleton module for AWS Internet Gateway
+resource "aws_internet_gateway" "this" {
+  vpc_id = var.vpc_id
 
-# Example:
-# resource "aws_internet_gateway" "this" {
-#   vpc_id = var.vpc_id
-#   tags   = var.tags
-# }
+  tags = merge(
+    {
+      Name = var.name
+    },
+    var.tags
+  )
+}
