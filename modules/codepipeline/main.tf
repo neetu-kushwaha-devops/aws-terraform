@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "kms_key_policy" {
     resources = ["*"]
 
     principals {
-      type        = "AWS"
+      type = "AWS"
       identifiers = [
         # Grant access to the pipeline execution role
         var.create_iam_role ? aws_iam_role.pipeline[0].arn : var.iam_role_arn
@@ -117,9 +117,9 @@ resource "aws_s3_bucket_policy" "artifacts" {
 
 data "aws_iam_policy_document" "artifacts_bucket_policy" {
   statement {
-    sid       = "EnforceTLSRequestsOnly"
-    effect    = "Deny"
-    actions   = ["s3:*"]
+    sid     = "EnforceTLSRequestsOnly"
+    effect  = "Deny"
+    actions = ["s3:*"]
     resources = [
       aws_s3_bucket.artifacts.arn,
       "${aws_s3_bucket.artifacts.arn}/*"
