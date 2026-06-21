@@ -12,17 +12,17 @@ variable "description" {
 variable "trust_providers" {
   description = "Map of trust providers to create"
   type = map(object({
-    policy_reference_name = string
-    trust_provider_type   = string # oidc or user-trust-provider
+    policy_reference_name    = string
+    trust_provider_type      = string           # oidc or user-trust-provider
     user_trust_provider_type = optional(string) # iam-identity-center or oidc
     oidc_options = optional(object({
-      authorization_endpoint              = string
-      client_id                           = string
-      client_secret                       = string
-      issuer                              = string
-      scope                               = string
-      token_endpoint                      = string
-      user_info_endpoint                  = string
+      authorization_endpoint = string
+      client_id              = string
+      client_secret          = string
+      issuer                 = string
+      scope                  = string
+      token_endpoint         = string
+      user_info_endpoint     = string
     }))
   }))
   default = {}
@@ -31,7 +31,7 @@ variable "trust_providers" {
 variable "groups" {
   description = "Map of verified access groups to create"
   type = map(object({
-    description = optional(string)
+    description     = optional(string)
     policy_document = optional(string)
   }))
   default = {}
@@ -57,6 +57,7 @@ variable "endpoints" {
     }))
     domain_certificate_arn = string
     security_group_ids     = list(string)
+    attachment_type        = optional(string, "vpc")
   }))
   default = {}
 }

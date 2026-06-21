@@ -48,11 +48,11 @@ resource "aws_globalaccelerator_endpoint_group" "this" {
   listener_arn          = aws_globalaccelerator_listener.this[each.value.listener_key].id
   endpoint_group_region = each.value.endpoint_group_region
 
-  health_check_port     = each.value.health_check_port
-  health_check_protocol = each.value.health_check_protocol
-  health_check_path     = each.value.health_check_path
+  health_check_port             = each.value.health_check_port
+  health_check_protocol         = each.value.health_check_protocol
+  health_check_path             = each.value.health_check_path
   health_check_interval_seconds = each.value.health_check_interval
-  threshold_count       = each.value.threshold_count
+  threshold_count               = each.value.threshold_count
 
   dynamic "endpoint_configuration" {
     for_each = each.value.endpoints

@@ -10,9 +10,9 @@ resource "aws_verifiedaccess_instance" "this" {
 }
 
 resource "aws_verifiedaccess_trust_provider" "this" {
-  for_each              = var.trust_providers
-  policy_reference_name = each.value.policy_reference_name
-  trust_provider_type   = each.value.trust_provider_type
+  for_each                 = var.trust_providers
+  policy_reference_name    = each.value.policy_reference_name
+  trust_provider_type      = each.value.trust_provider_type
   user_trust_provider_type = each.value.user_trust_provider_type
 
   dynamic "oidc_options" {
@@ -37,16 +37,16 @@ resource "aws_verifiedaccess_trust_provider" "this" {
 }
 
 resource "aws_verifiedaccess_instance_trust_provider_attachment" "this" {
-  for_each                           = var.trust_providers
-  verified_access_instance_id       = aws_verifiedaccess_instance.this.id
-  verified_access_trust_provider_id = aws_verifiedaccess_trust_provider.this[each.key].id
+  for_each                         = var.trust_providers
+  verifiedaccess_instance_id       = aws_verifiedaccess_instance.this.id
+  verifiedaccess_trust_provider_id = aws_verifiedaccess_trust_provider.this[each.key].id
 }
 
 resource "aws_verifiedaccess_group" "this" {
-  for_each                    = var.groups
-  verified_access_instance_id = aws_verifiedaccess_instance.this.id
-  description                 = each.value.description
-  policy_document             = each.value.policy_document
+  for_each                   = var.groups
+  verifiedaccess_instance_id = aws_verifiedaccess_instance.this.id
+  description                = each.value.description
+  policy_document            = each.value.policy_document
 
   tags = merge(
     {
@@ -62,6 +62,7 @@ resource "aws_verifiedaccess_endpoint" "this" {
   application_domain       = each.value.application_domain
   endpoint_domain_prefix   = each.value.endpoint_domain_prefix
   endpoint_type            = each.value.endpoint_type
+  attachment_type          = each.value.attachment_type
   domain_certificate_arn   = each.value.domain_certificate_arn
   security_group_ids       = each.value.security_group_ids
 

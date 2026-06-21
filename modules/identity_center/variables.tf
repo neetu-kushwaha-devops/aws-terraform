@@ -6,9 +6,9 @@ variable "instance_arn" {
 variable "permission_sets" {
   description = "Map of permission sets to create"
   type = map(object({
-    description      = optional(string)
-    session_duration = optional(string, "PT2H")
-    inline_policy    = optional(string)
+    description         = optional(string)
+    session_duration    = optional(string, "PT2H")
+    inline_policy       = optional(string)
     managed_policy_arns = optional(list(string), [])
   }))
   default = {}

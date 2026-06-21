@@ -3,10 +3,6 @@ output "instance_id" {
   value       = aws_verifiedaccess_instance.this.id
 }
 
-output "instance_arn" {
-  description = "The ARN of the Verified Access instance"
-  value       = aws_verifiedaccess_instance.this.arn
-}
 
 output "trust_provider_ids" {
   description = "Map of trust provider IDs"

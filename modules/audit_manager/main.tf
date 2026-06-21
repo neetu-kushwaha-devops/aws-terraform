@@ -27,7 +27,7 @@ resource "aws_auditmanager_assessment" "this" {
     dynamic "aws_services" {
       for_each = var.scope.aws_services
       content {
-        name = aws_services.value.name
+        service_name = aws_services.value.name
       }
     }
   }

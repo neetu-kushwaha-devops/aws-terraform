@@ -4,10 +4,8 @@ resource "aws_detective_graph" "this" {
 }
 
 resource "aws_detective_member" "this" {
-  for_each           = var.member_accounts
-  account_id         = each.key
-  email_address      = each.value
-  graph_arn          = one(aws_detective_graph.this[*].graph_arn)
-  invite             = true
-  disable_email_notification = true
+  for_each      = var.member_accounts
+  account_id    = each.key
+  email_address = each.value
+  graph_arn     = one(aws_detective_graph.this[*].graph_arn)
 }
