@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 # AWS Glue Module
 
 locals {
@@ -309,7 +321,7 @@ data "aws_iam_policy_document" "glue_assume_role" {
 resource "aws_iam_role_policy_attachment" "glue_service" {
   count      = var.create_role ? 1 : 0
   role       = aws_iam_role.glue[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSGlueServiceRole"
 }
 
 resource "aws_iam_policy" "glue_s3" {

@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 locals {
   connection_id = var.create_connection ? try(aws_dx_connection.this[0].id, "") : var.existing_connection_id
   dx_gateway_id = var.create_dx_gateway ? try(aws_dx_gateway.this[0].id, "") : var.existing_dx_gateway_id

@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 resource "aws_iam_role" "this" {
   count = var.create_role ? 1 : 0
   name  = "${var.name}-lambda-exec"
@@ -19,13 +31,13 @@ resource "aws_iam_role" "this" {
 resource "aws_iam_role_policy_attachment" "basic" {
   count      = var.create_role ? 1 : 0
   role       = aws_iam_role.this[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 resource "aws_iam_role_policy_attachment" "vpc" {
   count      = var.create_role && length(var.subnet_ids) > 0 ? 1 : 0
   role       = aws_iam_role.this[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 resource "aws_iam_policy" "dlq" {

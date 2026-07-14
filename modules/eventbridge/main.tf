@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 # -----------------------------------------------------------------------------
 # Custom Event Bus (Optional)
 # -----------------------------------------------------------------------------
@@ -56,10 +68,10 @@ resource "aws_iam_policy" "target_execution" {
           Action = [
             "states:StartExecution"
           ]
-          Resource = [for k, v in var.targets : v.arn if length(regexall("^arn:aws:states:", v.arn)) > 0]
+          Resource = [for k, v in var.targets : v.arn if length(regexall("^arn:${data.aws_partition.current.partition}:states:", v.arn)) > 0]
         }
       ],
-      length([for k, v in var.targets : v.arn if length(regexall("^arn:aws:ecs:", v.arn)) > 0]) > 0 ? [
+      length([for k, v in var.targets : v.arn if length(regexall("^arn:${data.aws_partition.current.partition}:ecs:", v.arn)) > 0]) > 0 ? [
         {
           Effect = "Allow"
           Action = [
@@ -98,8 +110,8 @@ resource "aws_cloudwatch_event_target" "this" {
   # Automatically resolve target execution role for SFN/ECS if create_target_role is enabled
   role_arn = lookup(each.value, "role_arn", null) != null ? each.value.role_arn : (
     var.create_target_role && (
-      length(regexall("^arn:aws:states:", each.value.arn)) > 0 ||
-      length(regexall("^arn:aws:ecs:", each.value.arn)) > 0
+      length(regexall("^arn:${data.aws_partition.current.partition}:states:", each.value.arn)) > 0 ||
+      length(regexall("^arn:${data.aws_partition.current.partition}:ecs:", each.value.arn)) > 0
     ) ? aws_iam_role.target[0].arn : null
   )
 
@@ -141,7 +153,7 @@ resource "aws_cloudwatch_event_target" "this" {
 # Lambda Permission for Rule Execution
 # -----------------------------------------------------------------------------
 resource "aws_lambda_permission" "eventbridge" {
-  for_each      = { for k, v in var.targets : k => v if length(regexall("^arn:aws:lambda:", v.arn)) > 0 }
+  for_each      = { for k, v in var.targets : k => v if length(regexall("^arn:${data.aws_partition.current.partition}:lambda:", v.arn)) > 0 }
   statement_id  = "AllowEventBridgeInvoke-${var.name}-${each.key}"
   action        = "lambda:InvokeFunction"
   function_name = each.value.arn

@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 resource "aws_launch_template" "this" {
   name          = var.use_name_prefix ? null : var.name
   name_prefix   = var.use_name_prefix ? "${var.name}-" : null

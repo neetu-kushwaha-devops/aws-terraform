@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 resource "aws_codedeploy_app" "this" {
   name             = var.name
   compute_platform = var.compute_platform
@@ -7,9 +19,9 @@ resource "aws_codedeploy_app" "this" {
 
 locals {
   default_policies = {
-    "Server" = ["arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"]
-    "ECS"    = ["arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"]
-    "Lambda" = ["arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda"]
+    "Server" = ["arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSCodeDeployRole"]
+    "ECS"    = ["arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSCodeDeployRoleForECS"]
+    "Lambda" = ["arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda"]
   }
 
   policy_arns_to_attach = length(var.iam_role_policy_arns) > 0 ? var.iam_role_policy_arns : lookup(local.default_policies, var.compute_platform, [])

@@ -15,14 +15,34 @@ variable "vpc_id" {
 }
 
 variable "ingress" {
-  type        = list(map(string))
-  description = "List of ingress rules maps. Expected keys: from_port, to_port, protocol, cidr_blocks, description, security_groups, self"
+  type = list(object({
+    description      = optional(string, null)
+    from_port        = optional(number, 0)
+    to_port          = optional(number, 0)
+    protocol         = optional(string, "-1")
+    cidr_blocks      = optional(list(string), null)
+    ipv6_cidr_blocks = optional(list(string), null)
+    prefix_list_ids  = optional(list(string), null)
+    security_groups  = optional(list(string), null)
+    self             = optional(bool, null)
+  }))
+  description = "List of ingress rule objects. Use list(string) for cidr_blocks/ipv6_cidr_blocks/prefix_list_ids/security_groups."
   default     = []
 }
 
 variable "egress" {
-  type        = list(map(string))
-  description = "List of egress rules maps. Expected keys: from_port, to_port, protocol, cidr_blocks, description, security_groups, self"
+  type = list(object({
+    description      = optional(string, null)
+    from_port        = optional(number, 0)
+    to_port          = optional(number, 0)
+    protocol         = optional(string, "-1")
+    cidr_blocks      = optional(list(string), null)
+    ipv6_cidr_blocks = optional(list(string), null)
+    prefix_list_ids  = optional(list(string), null)
+    security_groups  = optional(list(string), null)
+    self             = optional(bool, null)
+  }))
+  description = "List of egress rule objects. Use list(string) for cidr_blocks/ipv6_cidr_blocks/prefix_list_ids/security_groups."
   default     = []
 }
 

@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 # -----------------------------------------------------------------------------
 # IAM Role for Step Functions State Machine Execution
 # -----------------------------------------------------------------------------
@@ -22,7 +34,7 @@ resource "aws_iam_role" "this" {
 resource "aws_iam_role_policy_attachment" "xray" {
   count      = var.create_role && var.enable_xray ? 1 : 0
   role       = aws_iam_role.this[0].name
-  policy_arn = "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSXrayWriteOnlyAccess"
 }
 
 resource "aws_iam_policy" "logging" {

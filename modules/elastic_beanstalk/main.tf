@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 # Elastic Beanstalk Application
 resource "aws_elastic_beanstalk_application" "this" {
   name        = var.name
@@ -130,16 +142,16 @@ locals {
   service_role_arn      = var.create_iam_resources ? aws_iam_role.service[0].arn : var.service_role_arn
 
   ec2_policies = [
-    "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier",
-    "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier",
-    "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker",
-    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSElasticBeanstalkWebTier",
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSElasticBeanstalkWorkerTier",
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker",
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonSSMManagedInstanceCore"
   ]
 
   service_policies = [
-    "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkEnhancedHealth",
-    "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkService",
-    "arn:aws:iam::aws:policy/AWSElasticBeanstalkManagedUpdatesCustomerRolePolicy"
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSElasticBeanstalkEnhancedHealth",
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSElasticBeanstalkService",
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSElasticBeanstalkManagedUpdatesCustomerRolePolicy"
   ]
 
   # Standard defaults for Elastic Beanstalk environment settings

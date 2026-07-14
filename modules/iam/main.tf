@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 data "aws_iam_policy_document" "default_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]

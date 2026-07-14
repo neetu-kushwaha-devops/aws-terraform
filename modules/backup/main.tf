@@ -1,20 +1,17 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 locals {
   backup_role_arn = var.create_iam_role ? aws_iam_role.backup[0].arn : var.iam_role_arn
-
-  default_rules = [
-    {
-      name              = "daily-backup-rule"
-      schedule          = "cron(0 12 * * ? *)" # daily at 12:00 PM UTC
-      start_window      = 60
-      completion_window = 120
-      lifecycle = {
-        cold_storage_after = null
-        delete_after       = 30
-      }
-    }
-  ]
-
-  rules_to_create = length(var.rules) > 0 ? var.rules : local.default_rules
 }
 
 resource "aws_iam_role" "backup" {
@@ -40,14 +37,14 @@ resource "aws_iam_role" "backup" {
 resource "aws_iam_role_policy_attachment" "backup" {
   count = var.create_iam_role ? 1 : 0
 
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
   role       = aws_iam_role.backup[0].name
 }
 
 resource "aws_iam_role_policy_attachment" "restore" {
   count = var.create_iam_role ? 1 : 0
 
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
   role       = aws_iam_role.backup[0].name
 }
 
@@ -68,7 +65,7 @@ resource "aws_backup_plan" "this" {
   name = var.plan_name
 
   dynamic "rule" {
-    for_each = local.rules_to_create
+    for_each = var.rules
     content {
       rule_name         = rule.value.name
       target_vault_name = aws_backup_vault.this.name

@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 resource "aws_secretsmanager_secret" "this" {
   name                    = var.name_prefix == null ? var.name : null
   name_prefix             = var.name_prefix

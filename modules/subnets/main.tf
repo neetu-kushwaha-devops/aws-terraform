@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 resource "aws_subnet" "public" {
   count = length(var.public_subnets)
 
@@ -14,6 +24,13 @@ resource "aws_subnet" "public" {
     var.tags,
     var.public_subnet_tags
   )
+
+  lifecycle {
+    precondition {
+      condition     = length(var.availability_zones) == 0 || length(var.availability_zones) == length(var.public_subnets)
+      error_message = "Length of availability_zones must match length of public_subnets when availability_zones is provided."
+    }
+  }
 }
 
 resource "aws_subnet" "private" {
@@ -32,6 +49,13 @@ resource "aws_subnet" "private" {
     var.tags,
     var.private_subnet_tags
   )
+
+  lifecycle {
+    precondition {
+      condition     = length(var.availability_zones) == 0 || length(var.availability_zones) == length(var.private_subnets)
+      error_message = "Length of availability_zones must match length of private_subnets when availability_zones is provided."
+    }
+  }
 }
 
 resource "aws_subnet" "database" {
@@ -50,6 +74,13 @@ resource "aws_subnet" "database" {
     var.tags,
     var.database_subnet_tags
   )
+
+  lifecycle {
+    precondition {
+      condition     = length(var.availability_zones) == 0 || length(var.availability_zones) == length(var.database_subnets)
+      error_message = "Length of availability_zones must match length of database_subnets when availability_zones is provided."
+    }
+  }
 }
 
 resource "aws_db_subnet_group" "database" {

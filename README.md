@@ -1,5 +1,9 @@
 # AWS Production-Grade Reusable Terraform Modules
 
+![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![HCL](https://img.shields.io/badge/hcl-%23000000.svg?style=for-the-badge&logo=hashicorp&logoColor=white)
+
 This repository contains highly reusable, production-ready, and audited Terraform modules for AWS resources.
 
 Each module is organized under `modules/<module-name>/` and implements:

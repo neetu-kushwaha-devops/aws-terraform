@@ -33,6 +33,11 @@ output "db_instance_port" {
   value       = aws_db_instance.this.port
 }
 
+output "master_user_secret_arn" {
+  description = "The ARN of the Secrets Manager secret holding the master user password (when AWS-managed)"
+  value       = length(aws_db_instance.this.master_user_secret) > 0 ? aws_db_instance.this.master_user_secret[0].secret_arn : null
+}
+
 output "db_subnet_group_name" {
   description = "The subnet group name"
   value       = var.db_subnet_group_name != null ? var.db_subnet_group_name : (length(aws_db_subnet_group.this) > 0 ? aws_db_subnet_group.this[0].name : null)

@@ -21,34 +21,34 @@ module "web_sg" {
   ingress = [
     {
       description = "Allow HTTP from anywhere"
-      from_port   = "80"
-      to_port     = "80"
+      from_port   = 80
+      to_port     = 80
       protocol    = "tcp"
-      cidr_blocks = "0.0.0.0/0"
+      cidr_blocks = ["0.0.0.0/0"]
     },
     {
       description = "Allow HTTPS from corporate subnet"
-      from_port   = "443"
-      to_port     = "443"
+      from_port   = 443
+      to_port     = 443
       protocol    = "tcp"
-      cidr_blocks = "192.168.1.0/24,192.168.2.0/24"
+      cidr_blocks = ["192.168.1.0/24", "192.168.2.0/24"]
     },
     {
       description     = "Allow custom app port from application load balancer"
-      from_port       = "8080"
-      to_port         = "8080"
+      from_port       = 8080
+      to_port         = 8080
       protocol        = "tcp"
-      security_groups = "sg-87654321"
+      security_groups = ["sg-87654321"]
     }
   ]
 
   egress = [
     {
       description = "Allow all outbound traffic"
-      from_port   = "0"
-      to_port     = "0"
+      from_port   = 0
+      to_port     = 0
       protocol    = "-1"
-      cidr_blocks = "0.0.0.0/0"
+      cidr_blocks = ["0.0.0.0/0"]
     }
   ]
 
@@ -66,8 +66,8 @@ module "web_sg" {
 | `name` | The name of the security group | `string` | n/a | yes |
 | `description` | The description of the security group | `string` | `"Managed by Terraform"` | no |
 | `vpc_id` | The VPC ID where the security group will be created | `string` | n/a | yes |
-| `ingress` | List of ingress rules maps. Expected keys: `from_port`, `to_port`, `protocol`, `cidr_blocks`, `ipv6_cidr_blocks`, `prefix_list_ids`, `security_groups`, `self`, `description` | `list(map(string))` | `[]` | no |
-| `egress` | List of egress rules maps. Expected keys: `from_port`, `to_port`, `protocol`, `cidr_blocks`, `ipv6_cidr_blocks`, `prefix_list_ids`, `security_groups`, `self`, `description` | `list(map(string))` | `[]` | no |
+| `ingress` | List of ingress rule objects. Use `list(string)` for `cidr_blocks`, `ipv6_cidr_blocks`, `prefix_list_ids`, and `security_groups`. | `list(object({...}))` | `[]` | no |
+| `egress` | List of egress rule objects. Use `list(string)` for `cidr_blocks`, `ipv6_cidr_blocks`, `prefix_list_ids`, and `security_groups`. | `list(object({...}))` | `[]` | no |
 | `tags` | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
 
 ## Outputs

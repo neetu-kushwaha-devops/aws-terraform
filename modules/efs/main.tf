@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 resource "aws_efs_file_system" "this" {
   performance_mode                = var.performance_mode
   throughput_mode                 = var.throughput_mode

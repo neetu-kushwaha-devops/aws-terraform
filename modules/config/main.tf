@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 resource "aws_iam_role" "config" {
   count = var.enable && var.create_iam_role ? 1 : 0
   name  = var.iam_role_name != null ? var.iam_role_name : "${var.recorder_name}-role"
@@ -21,7 +33,7 @@ resource "aws_iam_role" "config" {
 resource "aws_iam_role_policy_attachment" "config_policy" {
   count      = var.enable && var.create_iam_role ? 1 : 0
   role       = aws_iam_role.config[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWS_ConfigRole"
 }
 
 resource "aws_iam_role_policy" "config_s3" {
@@ -40,8 +52,8 @@ resource "aws_iam_role_policy" "config_s3" {
           "s3:PutObjectAcl"
         ]
         Resource = [
-          "arn:aws:s3:::${var.delivery_s3_bucket}",
-          "arn:aws:s3:::${var.delivery_s3_bucket}/*"
+          "arn:${data.aws_partition.current.partition}:s3:::${var.delivery_s3_bucket}",
+          "arn:${data.aws_partition.current.partition}:s3:::${var.delivery_s3_bucket}/*"
         ]
       }
     ]

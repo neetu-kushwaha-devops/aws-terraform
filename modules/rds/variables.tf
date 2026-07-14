@@ -33,9 +33,16 @@ variable "username" {
 }
 
 variable "password" {
-  description = "Password for the master DB user"
+  description = "Password for the master DB user. If not provided, AWS manages the master password in Secrets Manager (recommended)."
   type        = string
   sensitive   = true
+  default     = null
+}
+
+variable "manage_master_user_password" {
+  description = "Whether to manage the master user password in AWS Secrets Manager. Ignored if password is provided."
+  type        = bool
+  default     = true
 }
 
 variable "port" {

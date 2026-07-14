@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.50"
+    }
+  }
+}
+
 resource "aws_db_subnet_group" "this" {
   count       = var.db_subnet_group_name == null && length(var.subnet_ids) > 0 ? 1 : 0
   name        = "${var.name}-subnet-group"
@@ -34,15 +44,16 @@ resource "aws_db_parameter_group" "this" {
 }
 
 resource "aws_db_instance" "this" {
-  identifier        = var.name
-  engine            = var.engine
-  engine_version    = var.engine_version
-  instance_class    = var.instance_class
-  db_name           = var.db_name
-  username          = var.username
-  password          = var.password
-  port              = var.port
-  allocated_storage = var.allocated_storage
+  identifier                  = var.name
+  engine                      = var.engine
+  engine_version              = var.engine_version
+  instance_class              = var.instance_class
+  db_name                     = var.db_name
+  username                    = var.username
+  password                    = var.password
+  manage_master_user_password = var.password != null ? null : var.manage_master_user_password
+  port                        = var.port
+  allocated_storage           = var.allocated_storage
 
   max_allocated_storage = var.max_allocated_storage > 0 ? var.max_allocated_storage : null
 

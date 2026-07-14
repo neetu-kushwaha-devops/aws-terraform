@@ -22,9 +22,19 @@ variable "stage_name" {
 }
 
 variable "routes" {
-  type        = any
+  type = map(object({
+    lambda_arn              = string
+    route_key               = optional(string, null)
+    integration_type        = optional(string, "AWS_PROXY")
+    integration_method      = optional(string, "POST")
+    payload_format_version  = optional(string, "2.0")
+    path_part               = optional(string, null)
+    http_method             = optional(string, "ANY")
+    authorization           = optional(string, "NONE")
+    integration_http_method = optional(string, "POST")
+  }))
   default     = {}
-  description = "A map of routes configuration. Each route contains properties based on api_type."
+  description = "A map of routes configuration. Each route contains properties based on api_type (HTTP or REST)."
 }
 
 variable "openapi_body" {

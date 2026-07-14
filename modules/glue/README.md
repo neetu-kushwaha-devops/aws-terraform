@@ -141,10 +141,10 @@ module "glue" {
 | `catalog_database_name` | The name of the Glue Catalog Database. If not specified, a default database name using var.name will be created | `string` | `null` | no |
 | `catalog_database_description` | Description of the Glue Catalog Database | `string` | `"Glue Catalog Database managed by Terraform"` | no |
 | `catalog_database_parameters` | A map of key-value pairs that defines parameters and properties of the database | `map(string)` | `{}` | no |
-| `catalog_tables` | Map of catalog tables to create within the Glue Database | `any` | `{}` | no |
-| `crawlers` | Map of Glue Crawlers to create. Keys are crawler names | `any` | `{}` | no |
-| `jobs` | Map of Glue Jobs to create. Keys are job names | `any` | `{}` | no |
-| `connections` | Map of Glue Connections to create. Keys are connection names | `any` | `{}` | no |
+| `catalog_tables` | Map of catalog tables to create within the Glue Database | `map(object({...}))` | `{}` | no |
+| `crawlers` | Map of Glue Crawlers to create. Keys are crawler names | `map(object({...}))` | `{}` | no |
+| `jobs` | Map of Glue Jobs to create. Keys are job names | `map(object({...}))` | `{}` | no |
+| `connections` | Map of Glue Connections to create. Keys are connection names | `map(object({...}))` | `{}` | no |
 | `security_configuration_name` | Optional custom name for the Glue Security Configuration. If not provided, var.name-security-config will be used | `string` | `null` | no |
 | `kms_key_arn` | The ARN of the KMS key used for encrypting Glue Data Catalog, CloudWatch Logs, Job Bookmarks, and S3 data | `string` | `null` | no |
 | `enable_catalog_encryption` | Whether to enable encryption-at-rest for the Glue Data Catalog metadata | `bool` | `true` | no |

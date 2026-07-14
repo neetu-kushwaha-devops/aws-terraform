@@ -75,7 +75,7 @@ module "opensearch" {
 | `dedicated_master_count` | Number of dedicated master nodes in the cluster | `number` | `3` | no |
 | `zone_awareness_enabled` | Indicates whether zone awareness is enabled | `bool` | `true` | no |
 | `availability_zone_count` | Number of Availability Zones for the domain (2 or 3) | `number` | `2` | no |
-| `cluster_config` | Map of cluster configurations to override (for compatibility) | `any` | `{}` | no |
+| `cluster_config` | Map of cluster configurations to override (for compatibility) | `object({...})` | `{}` | no |
 | `warm_enabled` | Indicates whether UltraWarm nodes are enabled | `bool` | `false` | no |
 | `warm_type` | Instance type for the UltraWarm nodes | `string` | `"warm1.medium.search"` | no |
 | `warm_count` | Number of UltraWarm nodes in the cluster | `number` | `2` | no |

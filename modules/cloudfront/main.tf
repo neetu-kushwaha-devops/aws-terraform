@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 # CloudFront Origin Access Control (OAC) for S3 origins
 resource "aws_cloudfront_origin_access_control" "this" {
   count                             = var.create_origin_access_control ? 1 : 0

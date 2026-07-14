@@ -98,15 +98,15 @@ module "codepipeline" {
 | `artifact_bucket_kms_key_arn` | The ARN of an existing KMS key to encrypt the artifact bucket. If omitted, a new customer-managed KMS key will be created. | `string` | `null` | no |
 | `artifact_bucket_force_destroy` | A boolean that indicates all objects should be deleted from the artifact bucket so that the bucket can be destroyed without error. | `bool` | `false` | no |
 | `artifact_bucket_expiration_days` | The number of days to keep artifacts before S3 automatically expires/deletes them. Set to null to disable expiration. | `number` | `30` | no |
-| `artifact_bucket_lifecycle_rules` | A list of custom lifecycle rules to apply to the S3 artifact bucket. Overrides the default expiration rule if provided. | `any` | `null` | no |
+| `artifact_bucket_lifecycle_rules` | A list of custom lifecycle rules to apply to the S3 artifact bucket. Overrides the default expiration rule if provided. | `list(object({...}))` | `null` | no |
 | `webhooks` | A list of webhook configurations to trigger the pipeline. | `list(object)` | `[]` | no |
 | `pipeline_type` | The type of the pipeline. Valid values are V1 and V2. If omitted, the default provider value is used. | `string` | `null` | no |
-| `triggers` | Trigger configuration for the pipeline (supported in V2 pipelines). | `any` | `[]` | no |
+| `triggers` | Trigger configuration for the pipeline (supported in V2 pipelines). | `list(object({...}))` | `[]` | no |
 | `create_iam_role` | Whether to create a new IAM role for CodePipeline. If false, var.iam_role_arn must be provided. | `bool` | `true` | no |
 | `iam_role_arn` | The ARN of an existing IAM role to use for CodePipeline. Only used if var.create_iam_role is false. | `string` | `null` | no |
 | `iam_role_name` | The name of the IAM role to create. If omitted, the name is generated using the pipeline name. | `string` | `null` | no |
 | `iam_role_path` | The path for the IAM role to create. | `string` | `"/"` | no |
-| `custom_iam_policy_statements` | A list of additional custom IAM policy statements to attach to the CodePipeline service role. | `any` | `[]` | no |
+| `custom_iam_policy_statements` | A list of additional custom IAM policy statements to attach to the CodePipeline service role. | `list(object({...}))` | `[]` | no |
 | `iam_role_policy_arns` | A list of IAM policy ARNs to attach to the CodePipeline service role. | `list(string)` | `[]` | no |
 | `tags` | A mapping of tags to assign to all resources in this module. | `map(string)` | `{}` | no |
 

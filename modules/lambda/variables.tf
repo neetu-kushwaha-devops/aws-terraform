@@ -160,7 +160,14 @@ variable "function_url_auth_type" {
 }
 
 variable "function_url_cors" {
-  type        = any
+  type = object({
+    allow_credentials = optional(bool, null)
+    allow_headers     = optional(list(string), null)
+    allow_methods     = optional(list(string), null)
+    allow_origins     = optional(list(string), null)
+    expose_headers    = optional(list(string), null)
+    max_age           = optional(number, null)
+  })
   default     = {}
   description = "CORS configuration for the Function URL"
 }

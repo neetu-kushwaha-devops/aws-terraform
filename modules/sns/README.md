@@ -68,7 +68,7 @@ EOF
 | `content_based_deduplication` | Enables content-based deduplication for FIFO topics | `bool` | `false` | no |
 | `delivery_policy` | The SNS delivery policy | `string` | `null` | no |
 | `policy` | The IAM policy document in JSON format to apply to the SNS topic | `string` | `null` | no |
-| `subscriptions` | Map of SNS subscriptions to create. The key is a unique identifier. The value is an object configuring settings (protocol, endpoint, etc.) | `any` | `{}` | no |
+| `subscriptions` | Map of SNS subscriptions to create. The key is a unique identifier. The value is an object configuring settings (protocol, endpoint, etc.) | `map(object({...}))` | `{}` | no |
 | `tags` | A mapping of tags to assign to the resources | `map(string)` | `{}` | no |
 
 ## Outputs

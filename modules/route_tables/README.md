@@ -55,7 +55,7 @@ module "route_tables" {
 |------|-------------|------|---------|:--------:|
 | `name` | Name prefix for the route table resources | `string` | n/a | yes |
 | `vpc_id` | The VPC ID where the route tables should be created | `string` | n/a | yes |
-| `route_tables` | Map of route tables config (see Usage for schema) | `any` | `{}` | no |
+| `route_tables` | Map of route tables config (see Usage for schema) | `map(object({...}))` | `{}` | no |
 | `tags` | Common tags to apply to all resources | `map(string)` | `{}` | no |
 
 ## Outputs

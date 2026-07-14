@@ -80,7 +80,7 @@ module "data_pipeline_trigger" {
 | `event_pattern` | The event pattern described a JSON object | `string` | `null` | no |
 | `is_enabled` | Whether the rule should be enabled | `bool` | `true` | no |
 | `create_target_role` | Whether to create an IAM role for EventBridge targets (SFN, ECS) | `bool` | `true` | no |
-| `targets` | A map of targets for this rule | `any` | `{}` | no |
+| `targets` | A map of targets for this rule | `map(object({...}))` | `{}` | no |
 | `tags` | A mapping of tags to assign to the resources | `map(string)` | `{}` | no |
 
 ## Outputs

@@ -155,17 +155,17 @@ module "ec2_codedeploy" {
 | `iam_role_name` | Custom name for the IAM service role. Defaults to `{name}-codedeploy-role` | `string` | `null` | no |
 | `iam_role_policy_arns` | Custom list of policy ARNs to attach to the IAM role. If empty, default managed policies are used based on `compute_platform` | `list(string)` | `[]` | no |
 | `deployment_style` | Map containing deployment style options (`deployment_option` and `deployment_type`) | `map(string)` | `null` | no |
-| `blue_green_deployment_config` | Map containing blue/green deployment settings (`deployment_ready_option`, `terminate_blue_instances_on_deployment_success`, `green_fleet_provisioning_option`) | `any` | `null` | no |
-| `load_balancer_info` | Load balancer information for the deployment group (`elb_info`, `target_group_info`, `target_group_pair_info`) | `any` | `null` | no |
+| `blue_green_deployment_config` | Map containing blue/green deployment settings (`deployment_ready_option`, `terminate_blue_instances_on_deployment_success`, `green_fleet_provisioning_option`) | `object({...})` | `null` | no |
+| `load_balancer_info` | Load balancer information for the deployment group (`elb_info`, `target_group_info`, `target_group_pair_info`) | `object({...})` | `null` | no |
 | `auto_rollback_enabled` | Whether auto-rollback is enabled for the deployment group | `bool` | `true` | no |
 | `auto_rollback_events` | List of events that trigger auto-rollback (e.g. `DEPLOYMENT_FAILURE`) | `list(string)` | `["DEPLOYMENT_FAILURE"]` | no |
 | `alarm_enabled` | Whether CloudWatch alarms are enabled for the deployment group | `bool` | `false` | no |
 | `alarm_names` | List of CloudWatch alarm names to associate with the deployment group | `list(string)` | `[]` | no |
 | `ignore_poll_alarm_failure` | Whether CodeDeploy should ignore poll alarm failure | `bool` | `false` | no |
-| `trigger_configurations` | List of trigger configurations (events, name, target_arn) | `list(any)` | `[]` | no |
-| `ec2_tag_filters` | List of EC2 tag filters to select target instances for Server deployments (OR logic) | `list(any)` | `[]` | no |
-| `ec2_tag_sets` | List of EC2 tag sets for Server deployments (AND logic). Each set contains a list of `ec2_tag_filters` | `list(any)` | `[]` | no |
-| `on_premises_instance_tag_filters` | List of on-premises instance tag filters to select target instances | `list(any)` | `[]` | no |
+| `trigger_configurations` | List of trigger configurations (events, name, target_arn) | `list(object({...}))` | `[]` | no |
+| `ec2_tag_filters` | List of EC2 tag filters to select target instances for Server deployments (OR logic) | `list(object({...}))` | `[]` | no |
+| `ec2_tag_sets` | List of EC2 tag sets for Server deployments (AND logic). Each set contains a list of `ec2_tag_filters` | `list(object({...}))` | `[]` | no |
+| `on_premises_instance_tag_filters` | List of on-premises instance tag filters to select target instances | `list(object({...}))` | `[]` | no |
 | `auto_scaling_groups` | List of Auto Scaling groups to associate with the deployment group (Server only) | `list(string)` | `[]` | no |
 | `ecs_service` | Map containing `cluster_name` and `service_name` for ECS deployments | `map(string)` | `null` | no |
 | `tags` | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |

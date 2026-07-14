@@ -22,14 +22,25 @@ variable "fargate_capacity_providers" {
 
 variable "ec2_capacity_providers" {
   description = "Map of EC2 capacity provider configurations. Key is the capacity provider name"
-  type        = any
-  default     = {}
+  type = map(object({
+    auto_scaling_group_arn         = string
+    managed_termination_protection = optional(string, "DISABLED")
+    maximum_scaling_step_size      = optional(number, null)
+    minimum_scaling_step_size      = optional(number, null)
+    status                         = optional(string, "ENABLED")
+    target_capacity                = optional(number, null)
+  }))
+  default = {}
 }
 
 variable "default_capacity_provider_strategy" {
   description = "The default capacity provider strategy for the cluster"
-  type        = list(any)
-  default     = []
+  type = list(object({
+    capacity_provider = string
+    weight            = optional(number, null)
+    base              = optional(number, null)
+  }))
+  default = []
 }
 
 # Task Definition variables
@@ -107,8 +118,21 @@ variable "task_role_arn" {
 
 variable "volumes" {
   description = "List of volume definitions for the task definition"
-  type        = any
-  default     = []
+  type = list(object({
+    name      = string
+    host_path = optional(string, null)
+    efs_volume_configuration = optional(list(object({
+      file_system_id          = string
+      root_directory          = optional(string, null)
+      transit_encryption      = optional(string, null)
+      transit_encryption_port = optional(number, null)
+      authorization_config = optional(list(object({
+        access_point_id = optional(string, null)
+        iam             = optional(string, null)
+      })), [])
+    })), [])
+  }))
+  default = []
 }
 
 # CloudWatch Log Group variables
@@ -163,20 +187,33 @@ variable "assign_public_ip" {
 
 variable "load_balancers" {
   description = "List of load balancer configuration blocks for the service"
-  type        = list(any)
-  default     = []
+  type = list(object({
+    target_group_arn = string
+    container_name   = string
+    container_port   = number
+  }))
+  default = []
 }
 
 variable "service_registries" {
   description = "List of service registry configuration blocks for the service"
-  type        = list(any)
-  default     = []
+  type = list(object({
+    registry_arn   = string
+    port           = optional(number, null)
+    container_name = optional(string, null)
+    container_port = optional(number, null)
+  }))
+  default = []
 }
 
 variable "service_capacity_provider_strategy" {
   description = "The capacity provider strategy to use for the service"
-  type        = list(any)
-  default     = []
+  type = list(object({
+    capacity_provider = string
+    weight            = number
+    base              = optional(number, null)
+  }))
+  default = []
 }
 
 variable "deployment_minimum_healthy_percent" {

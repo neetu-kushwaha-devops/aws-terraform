@@ -46,7 +46,17 @@ variable "policy" {
 }
 
 variable "subscriptions" {
-  type        = any
+  type = map(object({
+    protocol               = string
+    endpoint               = string
+    endpoint_auto_confirms = optional(bool, null)
+    filter_policy          = optional(string, null)
+    filter_policy_scope    = optional(string, null)
+    raw_message_delivery   = optional(bool, null)
+    redrive_policy         = optional(string, null)
+    subscription_role_arn  = optional(string, null)
+    delivery_policy        = optional(string, null)
+  }))
   default     = {}
   description = "Map of SNS subscriptions to create. The key is a unique identifier (e.g. name/index) for each subscription, and the value is an object configuring the subscription settings (protocol, endpoint, endpoint_auto_confirms, filter_policy, filter_policy_scope, raw_message_delivery, redrive_policy, subscription_role_arn, delivery_policy)"
 }

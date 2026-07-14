@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 # Production-ready AWS Elastic IP (EIP) module
 # Supports creating single or multiple EIPs and optionally associating them with EC2 instances or network interfaces
 

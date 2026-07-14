@@ -86,20 +86,38 @@ variable "create_security_group" {
 
 variable "security_group_ingress" {
   description = "Ingress rules for the created security group"
-  type        = list(any)
-  default     = []
+  type = list(object({
+    description      = optional(string, null)
+    from_port        = optional(number, 0)
+    to_port          = optional(number, 0)
+    protocol         = optional(string, "-1")
+    cidr_blocks      = optional(list(string), null)
+    ipv6_cidr_blocks = optional(list(string), null)
+    prefix_list_ids  = optional(list(string), null)
+    security_groups  = optional(list(string), null)
+    self             = optional(bool, null)
+  }))
+  default = []
 }
 
 variable "security_group_egress" {
   description = "Egress rules for the created security group"
-  type        = list(any)
+  type = list(object({
+    description      = optional(string, null)
+    from_port        = optional(number, 0)
+    to_port          = optional(number, 0)
+    protocol         = optional(string, "-1")
+    cidr_blocks      = optional(list(string), null)
+    ipv6_cidr_blocks = optional(list(string), null)
+    prefix_list_ids  = optional(list(string), null)
+    security_groups  = optional(list(string), null)
+    self             = optional(bool, null)
+  }))
   default = [
     {
       description = "Allow all outbound traffic"
-      from_port   = 0
-      to_port     = 0
       protocol    = "-1"
-      cidr_blocks = "0.0.0.0/0"
+      cidr_blocks = ["0.0.0.0/0"]
     }
   ]
 }
@@ -144,18 +162,74 @@ variable "kms_key_arn" {
 # AWS Batch Resources Configurations
 variable "compute_environments" {
   description = "Configuration map for AWS Batch compute environments"
-  type        = any
-  default     = {}
+  type = map(object({
+    name         = optional(string, null)
+    type         = optional(string, "MANAGED")
+    state        = optional(string, "ENABLED")
+    service_role = optional(string, null)
+    compute_resources = optional(object({
+      type                    = string
+      max_vcpus               = number
+      min_vcpus               = optional(number, 0)
+      desired_vcpus           = optional(number, null)
+      allocation_strategy     = optional(string, null)
+      instance_type           = optional(list(string), null)
+      instance_role           = optional(string, null)
+      bid_percentage          = optional(number, null)
+      ec2_key_pair            = optional(string, null)
+      image_id                = optional(string, null)
+      spot_iam_fleet_role     = optional(string, null)
+      subnets                 = list(string)
+      security_group_ids      = optional(list(string), null)
+      launch_template_id      = optional(string, null)
+      launch_template_name    = optional(string, null)
+      launch_template_version = optional(string, "$Latest")
+      ec2_configuration = optional(list(object({
+        image_id_override = optional(string, null)
+        image_type        = optional(string, null)
+      })), [])
+      tags = optional(map(string), {})
+    }), null)
+  }))
+  default = {}
 }
 
 variable "job_queues" {
   description = "Configuration map for AWS Batch job queues"
-  type        = any
-  default     = {}
+  type = map(object({
+    name     = optional(string, null)
+    state    = optional(string, "ENABLED")
+    priority = optional(number, 1)
+    compute_environment_order = optional(list(object({
+      order               = number
+      compute_environment = string
+    })), null)
+    compute_environments = optional(list(string), [])
+  }))
+  default = {}
 }
 
 variable "job_definitions" {
   description = "Configuration map for AWS Batch job definitions"
-  type        = any
-  default     = {}
+  type = map(object({
+    name                  = optional(string, null)
+    type                  = optional(string, "container")
+    container_properties  = optional(string, null)
+    parameters            = optional(map(string), null)
+    platform_capabilities = optional(list(string), null)
+    propagate_tags        = optional(bool, null)
+    retry_strategy = optional(object({
+      attempts = optional(number, null)
+      evaluate_on_exit = optional(list(object({
+        action           = string
+        on_exit_code     = optional(string, null)
+        on_reason        = optional(string, null)
+        on_status_reason = optional(string, null)
+      })), [])
+    }), null)
+    timeout = optional(object({
+      attempt_duration_seconds = optional(number, null)
+    }), null)
+  }))
+  default = {}
 }

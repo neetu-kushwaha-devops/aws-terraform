@@ -26,9 +26,31 @@ variable "plan_name" {
 }
 
 variable "rules" {
-  type        = any
-  default     = []
-  description = "List of maps containing backup rules. Each rule supports name, schedule, start_window, completion_window, recovery_point_tags, and lifecycle (cold_storage_after, delete_after) settings"
+  type = list(object({
+    name              = string
+    schedule          = optional(string, null)
+    start_window      = optional(number, null)
+    completion_window = optional(number, null)
+    lifecycle = optional(object({
+      cold_storage_after = optional(number, null)
+      delete_after       = optional(number, null)
+    }), null)
+    recovery_point_tags = optional(map(string), null)
+  }))
+  default = [
+    {
+      name              = "daily-backup-rule"
+      schedule          = "cron(0 12 * * ? *)" # daily at 12:00 PM UTC
+      start_window      = 60
+      completion_window = 120
+      lifecycle = {
+        cold_storage_after = null
+        delete_after       = 30
+      }
+      recovery_point_tags = null
+    }
+  ]
+  description = "List of backup rule objects. Each rule supports name, schedule, start_window, completion_window, recovery_point_tags, and lifecycle (cold_storage_after, delete_after) settings"
 }
 
 variable "create_iam_role" {
@@ -44,7 +66,15 @@ variable "iam_role_arn" {
 }
 
 variable "selections" {
-  type        = any
+  type = map(object({
+    name      = string
+    resources = optional(list(string), null)
+    selection_tags = optional(list(object({
+      type  = string
+      key   = string
+      value = string
+    })), [])
+  }))
   default     = {}
   description = "Map of backup selections to apply. The key is a unique identifier, and the value is an object containing name, resources (list of ARNs), and selection_tags (list of objects with type, key, value)"
 }

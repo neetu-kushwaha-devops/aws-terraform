@@ -88,7 +88,22 @@ variable "node_role_arn" {
 
 variable "node_groups" {
   description = "Map of EKS managed node group configurations. Keys are node group names"
-  type        = any
+  type = map(object({
+    desired_size            = optional(number, 2)
+    max_size                = optional(number, 4)
+    min_size                = optional(number, 1)
+    instance_types          = optional(list(string), ["t3.medium"])
+    capacity_type           = optional(string, "ON_DEMAND")
+    ami_type                = optional(string, "AL2_x86_64")
+    create_launch_template  = optional(bool, false)
+    disk_size               = optional(number, 30)
+    volume_type             = optional(string, "gp3")
+    max_unavailable         = optional(number, 1)
+    subnet_ids              = optional(list(string), null)
+    launch_template_id      = optional(string, null)
+    launch_template_version = optional(string, "$Latest")
+    node_role_arn           = optional(string, null)
+  }))
   default = {
     default = {
       desired_size           = 2

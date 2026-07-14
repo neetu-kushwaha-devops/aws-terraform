@@ -1,9 +1,21 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 resource "aws_organizations_organization" "this" {
   count                         = var.create_organization ? 1 : 0
   feature_set                   = var.feature_set
   aws_service_access_principals = var.aws_service_access_principals
   enabled_policy_types          = var.enabled_policy_types
 }
+
+data "aws_partition" "current" {}
 
 data "aws_organizations_organization" "this" {
   count = var.create_organization ? 0 : 1
@@ -26,7 +38,7 @@ locals {
       "Resource": "*",
       "Condition": {
         "StringLike": {
-          "aws:PrincipalArn": "arn:aws:iam::*:root"
+          "aws:PrincipalArn": "arn:${data.aws_partition.current.partition}:iam::*:root"
         }
       }
     }
@@ -98,7 +110,7 @@ EOF
         },
         "ArnNotEquals": {
           "aws:PrincipalARN": [
-            "arn:aws:iam::*:role/OrganizationAccountAccessRole"
+            "arn:${data.aws_partition.current.partition}:iam::*:role/OrganizationAccountAccessRole"
           ]
         }
       }

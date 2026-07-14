@@ -93,8 +93,8 @@ module "my_service" {
 | `name` | Name to be used for the ECS cluster and as a prefix for other resources | `string` | n/a | yes |
 | `cluster_settings` | Configuration block for ECS cluster settings, e.g. containerInsights | `list(map(string))` | `[{"name": "containerInsights", "value": "enabled"}]` | no |
 | `fargate_capacity_providers` | List of Fargate capacity providers to associate with the cluster | `list(string)` | `["FARGATE", "FARGATE_SPOT"]` | no |
-| `ec2_capacity_providers` | Map of EC2 capacity provider configurations. Key is capacity provider name | `any` | `{}` | no |
-| `default_capacity_provider_strategy` | The default capacity provider strategy for the cluster | `list(any)` | `[]` | no |
+| `ec2_capacity_providers` | Map of EC2 capacity provider configurations. Key is capacity provider name | `map(object({...}))` | `{}` | no |
+| `default_capacity_provider_strategy` | The default capacity provider strategy for the cluster | `list(object({...}))` | `[]` | no |
 | `create_task_definition` | Whether to create an ECS task definition | `bool` | `false` | no |
 | `task_family` | The family of the task definition. Defaults to `name` if null | `string` | `null` | no |
 | `container_definitions` | The JSON container definitions. Required if `create_task_definition` is true | `string` | `""` | no |
@@ -107,7 +107,7 @@ module "my_service" {
 | `execution_role_arn` | ARN of an existing IAM role for task execution. Used if `create_execution_role` is false | `string` | `null` | no |
 | `create_task_role` | Whether to create a default ECS task role | `bool` | `true` | no |
 | `task_role_arn` | ARN of an existing IAM role for the task. Used if `create_task_role` is false | `string` | `null` | no |
-| `volumes` | List of volume definitions for the task definition | `any` | `[]` | no |
+| `volumes` | List of volume definitions for the task definition | `list(object({...}))` | `[]` | no |
 | `create_log_group` | Whether to create a CloudWatch log group for the ECS task logs | `bool` | `true` | no |
 | `log_group_retention` | Specifies the number of days you want to retain log events in the log group | `number` | `30` | no |
 | `create_service` | Whether to create an ECS service | `bool` | `false` | no |
@@ -116,9 +116,9 @@ module "my_service" {
 | `subnets` | Subnet IDs associated with the task or service | `list(string)` | `[]` | no |
 | `security_groups` | Security groups associated with the task or service | `list(string)` | `[]` | no |
 | `assign_public_ip` | Assign a public IP address to the ENI (Fargate only) | `bool` | `false` | no |
-| `load_balancers` | List of load balancer configuration blocks for the service | `list(any)` | `[]` | no |
-| `service_registries` | List of service registry configuration blocks for the service | `list(any)` | `[]` | no |
-| `service_capacity_provider_strategy` | The capacity provider strategy to use for the service | `list(any)` | `[]` | no |
+| `load_balancers` | List of load balancer configuration blocks for the service | `list(object({...}))` | `[]` | no |
+| `service_registries` | List of service registry configuration blocks for the service | `list(object({...}))` | `[]` | no |
+| `service_capacity_provider_strategy` | The capacity provider strategy to use for the service | `list(object({...}))` | `[]` | no |
 | `deployment_minimum_healthy_percent` | The lower limit of the number of running tasks during deployment | `number` | `100` | no |
 | `deployment_maximum_percent` | The upper limit of the number of running tasks during deployment | `number` | `200` | no |
 | `propagate_tags` | Specifies whether to propagate the tags from the task definition or the service | `string` | `"SERVICE"` | no |

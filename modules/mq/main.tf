@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 resource "aws_mq_configuration" "this" {
   count          = var.create_configuration ? 1 : 0
   name           = coalesce(var.configuration_name, "${var.name}-config")

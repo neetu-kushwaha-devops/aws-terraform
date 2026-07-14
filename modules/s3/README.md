@@ -85,7 +85,7 @@ module "s3_bucket_advanced" {
 | `sse_algorithm` | Server-side encryption algorithm to use (`AES256` or `aws:kms`). | `string` | `"AES256"` | no |
 | `kms_master_key_id` | KMS master key ID or ARN (used with `aws:kms`). | `string` | `null` | no |
 | `bucket_key_enabled` | Whether to use Amazon S3 Bucket Keys for SSE-KMS. | `bool` | `false` | no |
-| `lifecycle_rules` | List of lifecycle rules to configure. | `any` | `[]` | no |
+| `lifecycle_rules` | List of lifecycle rule objects. | `list(object({...}))` | `[]` | no |
 | `tags` | A mapping of tags to assign to the resources. | `map(string)` | `{}` | no |
 
 ## Outputs

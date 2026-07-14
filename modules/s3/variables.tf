@@ -71,6 +71,31 @@ variable "bucket_key_enabled" {
 
 variable "lifecycle_rules" {
   description = "List of lifecycle rules to configure. Each rule is a map matching the lifecycle configuration format."
-  type        = any
-  default     = []
+  type = list(object({
+    id     = string
+    status = string
+    filter = optional(object({
+      prefix = optional(string, null)
+      tag = optional(object({
+        key   = string
+        value = string
+      }), null)
+    }), null)
+    transitions = optional(list(object({
+      days          = optional(number, null)
+      storage_class = string
+    })), [])
+    expiration = optional(object({
+      days                         = optional(number, null)
+      expired_object_delete_marker = optional(bool, null)
+    }), null)
+    noncurrent_version_transitions = optional(list(object({
+      days          = optional(number, null)
+      storage_class = string
+    })), [])
+    noncurrent_version_expiration = optional(object({
+      days = optional(number, null)
+    }), null)
+  }))
+  default = []
 }

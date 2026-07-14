@@ -46,7 +46,23 @@ variable "create_target_role" {
 }
 
 variable "targets" {
-  type        = any
+  type = map(object({
+    arn             = string
+    role_arn        = optional(string, null)
+    input           = optional(string, null)
+    input_path      = optional(string, null)
+    dead_letter_arn = optional(string, null)
+    ecs_target = optional(object({
+      task_definition_arn = string
+      task_count          = optional(number, 1)
+      launch_type         = optional(string, "FARGATE")
+      platform_version    = optional(string, "LATEST")
+      group               = optional(string, null)
+      subnet_ids          = optional(list(string), null)
+      security_groups     = optional(list(string), null)
+      assign_public_ip    = optional(bool, false)
+    }), null)
+  }))
   default     = {}
   description = "A map of targets for this rule. Properties include: arn, role_arn, input, input_path, dead_letter_arn, and ecs_target (task_definition_arn, subnets, etc.)"
 }

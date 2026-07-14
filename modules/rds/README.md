@@ -14,7 +14,8 @@ module "rds" {
   instance_class    = "db.t3.medium"
   db_name           = "appdb"
   username          = "dbadmin"
-  password          = "SuperSecretPassword123!" # Ideally fetched from Secrets Manager or KMS
+  # Omit password to have AWS manage the master password in Secrets Manager (recommended).
+  # Alternatively, provide password = "..." to use a user-supplied plaintext password.
   port              = 5432
   allocated_storage = 50
   
@@ -65,7 +66,8 @@ module "rds" {
 | `instance_class` | The instance type of the RDS instance | `string` | `"db.t3.micro"` | no |
 | `db_name` | The name of the database to create when the DB instance is created | `string` | `null` | no |
 | `username` | Username for the master DB user | `string` | n/a | yes |
-| `password` | Password for the master DB user (sensitive) | `string` | n/a | yes |
+| `password` | Password for the master DB user. If omitted, AWS manages the password in Secrets Manager. | `string` | `null` | no |
+| `manage_master_user_password` | Whether to manage the master user password in AWS Secrets Manager. Ignored if `password` is provided. | `bool` | `true` | no |
 | `port` | The port on which the DB accepts connections | `number` | `null` | no |
 | `allocated_storage` | The allocated storage in gigabytes | `number` | `20` | no |
 | `max_allocated_storage` | The upper limit to which Amazon RDS can automatically scale the storage of the DB instance. (Storage autoscaling). Set to 0 to disable. | `number` | `100` | no |
@@ -101,3 +103,4 @@ module "rds" {
 | `db_instance_port` | The database port |
 | `db_subnet_group_name` | The subnet group name |
 | `db_parameter_group_name` | The parameter group name |
+| `master_user_secret_arn` | The ARN of the Secrets Manager secret holding the master user password (when AWS-managed) |

@@ -91,7 +91,7 @@ module "eks_custom" {
 | `cluster_role_arn` | ARN of an existing IAM role for EKS cluster. Used if `create_cluster_role` is false | `string` | `null` | no |
 | `create_node_role` | Whether to create a default EKS node group IAM role | `bool` | `true` | no |
 | `node_role_arn` | ARN of an existing IAM role for node groups. Used if `create_node_role` is false | `string` | `null` | no |
-| `node_groups` | Map of EKS managed node group configurations. Keys are node group names | `any` | *(Default system group defined in variables)* | no |
+| `node_groups` | Map of EKS managed node group configurations. Keys are node group names | `map(object({...}))` | *(Default system group defined in variables)* | no |
 | `tags` | A mapping of tags to assign to the resources | `map(string)` | `{}` | no |
 
 ## Outputs

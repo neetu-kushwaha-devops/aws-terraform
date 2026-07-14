@@ -147,17 +147,17 @@ module "batch_ec2_spot" {
 | `create_job_role` | Whether to create a default IAM role for the Batch job container execution | `bool` | `true` | no |
 | `job_role_additional_policies` | List of additional IAM policy ARNs to attach to the job role | `list(string)` | `[]` | no |
 | `create_security_group` | Whether to create a dedicated security group for AWS Batch EC2 instances | `bool` | `true` | no |
-| `security_group_ingress` | Ingress rules for the created security group | `list(any)` | `[]` | no |
-| `security_group_egress` | Egress rules for the created security group | `list(any)` | *See below* | no |
+| `security_group_ingress` | Ingress rules for the created security group | `list(object({...}))` | `[]` | no |
+| `security_group_egress` | Egress rules for the created security group | `list(object({...}))` | *See below* | no |
 | `create_launch_template` | Whether to create a default launch template that enforces IMDSv2 and encrypted EBS volumes for EC2 compute resources | `bool` | `true` | no |
 | `launch_template_volume_size` | Size of the encrypted EBS volume in GB | `number` | `30` | no |
 | `launch_template_volume_type` | Type of the encrypted EBS volume | `string` | `"gp3"` | no |
 | `launch_template_device_name` | Block device name for EBS volume | `string` | `"/dev/xvda"` | no |
 | `launch_template_http_put_response_hop_limit` | The HTTP put response hop limit for IMDSv2 | `number` | `2` | no |
 | `kms_key_arn` | The ARN of the KMS key to encrypt EBS volumes. If null, standard AWS managed EBS key is used | `string` | `null` | no |
-| `compute_environments` | Configuration map for AWS Batch compute environments | `any` | `{}` | no |
-| `job_queues` | Configuration map for AWS Batch job queues | `any` | `{}` | no |
-| `job_definitions` | Configuration map for AWS Batch job definitions | `any` | `{}` | no |
+| `compute_environments` | Configuration map for AWS Batch compute environments | `map(object({...}))` | `{}` | no |
+| `job_queues` | Configuration map for AWS Batch job queues | `map(object({...}))` | `{}` | no |
+| `job_definitions` | Configuration map for AWS Batch job definitions | `map(object({...}))` | `{}` | no |
 
 ### Default Security Group Egress Rule
 ```hcl
@@ -167,7 +167,7 @@ module "batch_ec2_spot" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = "0.0.0.0/0"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 ]
 ```

@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 locals {
   is_private_ecr     = var.source_type == "IMAGE" && try(var.image_repository.image_repository_type, "") == "ECR"
   create_access_role = var.create_access_role && local.is_private_ecr
@@ -54,7 +66,7 @@ resource "aws_iam_role" "access_role" {
 resource "aws_iam_role_policy_attachment" "access_role_policy" {
   count      = local.create_access_role ? 1 : 0
   role       = aws_iam_role.access_role[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECR"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECR"
 }
 
 # IAM Instance Role (for container runtime execution permissions)

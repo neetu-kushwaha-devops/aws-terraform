@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
@@ -37,7 +47,7 @@ data "aws_iam_policy_document" "emr_service_assume" {
 resource "aws_iam_role_policy_attachment" "emr_service" {
   count      = var.create_service_role ? 1 : 0
   role       = aws_iam_role.emr_service[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEMRServicePolicy_v2"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEMRServicePolicy_v2"
 }
 
 resource "aws_iam_role_policy_attachment" "emr_service_additional" {
@@ -78,7 +88,7 @@ data "aws_iam_policy_document" "emr_ec2_assume" {
 resource "aws_iam_role_policy_attachment" "emr_ec2" {
   count      = var.create_instance_profile ? 1 : 0
   role       = aws_iam_role.emr_ec2[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role"
 }
 
 resource "aws_iam_role_policy_attachment" "emr_ec2_additional" {

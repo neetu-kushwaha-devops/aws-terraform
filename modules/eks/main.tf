@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
 # KMS Key for EKS Envelope Encryption
 resource "aws_kms_key" "eks" {
   count                   = var.create_kms_key && var.kms_key_arn == null ? 1 : 0
@@ -41,13 +53,13 @@ resource "aws_iam_role" "cluster" {
 resource "aws_iam_role_policy_attachment" "cluster_policy" {
   count      = var.create_cluster_role ? 1 : 0
   role       = aws_iam_role.cluster[0].name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "cluster_vpc_controller" {
   count      = var.create_cluster_role ? 1 : 0
   role       = aws_iam_role.cluster[0].name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonEKSVPCResourceController"
 }
 
 # CloudWatch Log Group for Control Plane Logs
@@ -116,25 +128,25 @@ resource "aws_iam_role" "node_group" {
 resource "aws_iam_role_policy_attachment" "node_policy" {
   count      = var.create_node_role ? 1 : 0
   role       = aws_iam_role.node_group[0].name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "node_cni" {
   count      = var.create_node_role ? 1 : 0
   role       = aws_iam_role.node_group[0].name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
 resource "aws_iam_role_policy_attachment" "node_ecr" {
   count      = var.create_node_role ? 1 : 0
   role       = aws_iam_role.node_group[0].name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
 resource "aws_iam_role_policy_attachment" "node_ssm" {
   count      = var.create_node_role ? 1 : 0
   role       = aws_iam_role.node_group[0].name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 # Custom Launch Templates for Node Groups
@@ -181,7 +193,7 @@ resource "aws_eks_node_group" "this" {
   cluster_name    = aws_eks_cluster.this.name
   node_group_name = each.key
   node_role_arn   = var.create_node_role ? aws_iam_role.node_group[0].arn : each.value.node_role_arn
-  subnet_ids      = lookup(each.value, "subnet_ids", var.subnet_ids)
+  subnet_ids      = coalesce(each.value.subnet_ids, var.subnet_ids)
 
   scaling_config {
     desired_size = lookup(each.value, "desired_size", 2)

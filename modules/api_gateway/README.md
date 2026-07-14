@@ -69,7 +69,7 @@ module "my_rest_api" {
 | `description` | The description of the API Gateway | `string` | `"API Gateway managed by Terraform"` | no |
 | `api_type` | The type of API Gateway. Valid values: HTTP, REST | `string` | `"HTTP"` | no |
 | `stage_name` | The name of the API Gateway Stage | `string` | `"$default"` | no |
-| `routes` | A map of routes configuration. Each route contains properties based on api_type | `any` | `{}` | no |
+| `routes` | A map of routes configuration. Each route contains properties based on api_type (HTTP or REST) | `map(object({...}))` | `{}` | no |
 | `openapi_body` | An OpenAPI definition string (only for REST API Gateway) | `string` | `null` | no |
 | `openapi_lambda_arns` | List of Lambda ARNs to grant API Gateway invoke execution access to (only if using openapi_body) | `list(string)` | `[]` | no |
 | `rest_endpoint_type` | The type of endpoint for REST API. Valid values: EDGE, REGIONAL, PRIVATE | `string` | `"REGIONAL"` | no |

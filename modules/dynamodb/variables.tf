@@ -42,14 +42,27 @@ variable "attributes" {
 
 variable "global_secondary_indexes" {
   description = "Describe GSI configurations for the DynamoDB table"
-  type        = any
-  default     = []
+  type = list(object({
+    name               = string
+    hash_key           = string
+    projection_type    = string
+    range_key          = optional(string, null)
+    read_capacity      = optional(number, null)
+    write_capacity     = optional(number, null)
+    non_key_attributes = optional(list(string), null)
+  }))
+  default = []
 }
 
 variable "local_secondary_indexes" {
   description = "Describe LSI configurations for the DynamoDB table"
-  type        = any
-  default     = []
+  type = list(object({
+    name               = string
+    range_key          = string
+    projection_type    = string
+    non_key_attributes = optional(list(string), null)
+  }))
+  default = []
 }
 
 variable "stream_enabled" {

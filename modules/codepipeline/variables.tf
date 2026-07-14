@@ -29,8 +29,17 @@ variable "artifact_bucket_expiration_days" {
 
 variable "artifact_bucket_lifecycle_rules" {
   description = "A list of custom lifecycle rules to apply to the S3 artifact bucket. Overrides the default expiration rule if provided."
-  type        = any
-  default     = null
+  type = list(object({
+    id     = string
+    status = optional(string, "Enabled")
+    expiration = optional(object({
+      days = optional(number, null)
+    }), null)
+    noncurrent_version_expiration = optional(object({
+      noncurrent_days = optional(number, null)
+    }), null)
+  }))
+  default = null
 }
 
 variable "stages" {
@@ -79,8 +88,23 @@ variable "pipeline_type" {
 
 variable "triggers" {
   description = "Trigger configuration for the pipeline (supported in V2 pipelines)."
-  type        = any
-  default     = []
+  type = list(object({
+    provider_type = string
+    git_configuration = optional(object({
+      source_action_name = string
+      push = optional(object({
+        branches = optional(object({
+          includes = optional(list(string), null)
+          excludes = optional(list(string), null)
+        }), null)
+        tags = optional(object({
+          includes = optional(list(string), null)
+          excludes = optional(list(string), null)
+        }), null)
+      }), null)
+    }), null)
+  }))
+  default = []
 }
 
 variable "create_iam_role" {
@@ -109,8 +133,18 @@ variable "iam_role_path" {
 
 variable "custom_iam_policy_statements" {
   description = "A list of additional custom IAM policy statements to attach to the CodePipeline service role."
-  type        = any
-  default     = []
+  type = list(object({
+    sid       = optional(string, null)
+    effect    = optional(string, "Allow")
+    actions   = list(string)
+    resources = list(string)
+    conditions = optional(list(object({
+      test     = string
+      variable = string
+      values   = list(string)
+    })), [])
+  }))
+  default = []
 }
 
 variable "iam_role_policy_arns" {

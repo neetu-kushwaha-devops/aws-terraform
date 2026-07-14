@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 # AWS WorkSpaces Terraform Module - main.tf
 # Provisions AWS WorkSpaces, registers directory, and configures IP access control groups.
 

@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 # -----------------------------------------------------------------------------
 # CloudWatch Log Group for Access Logs
 # -----------------------------------------------------------------------------
@@ -22,16 +32,16 @@ resource "aws_apigatewayv2_api" "this" {
 resource "aws_apigatewayv2_integration" "this" {
   for_each               = var.api_type == "HTTP" ? var.routes : {}
   api_id                 = aws_apigatewayv2_api.this[0].id
-  integration_type       = lookup(each.value, "integration_type", "AWS_PROXY")
+  integration_type       = coalesce(each.value.integration_type, "AWS_PROXY")
   integration_uri        = each.value.lambda_arn
-  integration_method     = lookup(each.value, "integration_method", "POST")
-  payload_format_version = lookup(each.value, "payload_format_version", "2.0")
+  integration_method     = coalesce(each.value.integration_method, "POST")
+  payload_format_version = coalesce(each.value.payload_format_version, "2.0")
 }
 
 resource "aws_apigatewayv2_route" "this" {
   for_each  = var.api_type == "HTTP" ? var.routes : {}
   api_id    = aws_apigatewayv2_api.this[0].id
-  route_key = lookup(each.value, "route_key", each.key)
+  route_key = coalesce(each.value.route_key, each.key)
   target    = "integrations/${aws_apigatewayv2_integration.this[each.key].id}"
 }
 
@@ -88,8 +98,8 @@ resource "aws_api_gateway_method" "this" {
   for_each      = (var.api_type == "REST" && var.openapi_body == null) ? var.routes : {}
   rest_api_id   = aws_api_gateway_rest_api.this[0].id
   resource_id   = aws_api_gateway_resource.this[each.key].id
-  http_method   = lookup(each.value, "http_method", "ANY")
-  authorization = lookup(each.value, "authorization", "NONE")
+  http_method   = coalesce(each.value.http_method, "ANY")
+  authorization = coalesce(each.value.authorization, "NONE")
 }
 
 resource "aws_api_gateway_integration" "this" {
@@ -97,8 +107,8 @@ resource "aws_api_gateway_integration" "this" {
   rest_api_id             = aws_api_gateway_rest_api.this[0].id
   resource_id             = aws_api_gateway_resource.this[each.key].id
   http_method             = aws_api_gateway_method.this[each.key].http_method
-  integration_http_method = lookup(each.value, "integration_http_method", "POST")
-  type                    = lookup(each.value, "integration_type", "AWS_PROXY")
+  integration_http_method = coalesce(each.value.integration_http_method, "POST")
+  type                    = coalesce(each.value.integration_type, "AWS_PROXY")
   uri                     = each.value.lambda_arn
 }
 

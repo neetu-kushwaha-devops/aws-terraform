@@ -57,14 +57,44 @@ variable "deployment_style" {
 
 variable "blue_green_deployment_config" {
   description = "Map containing blue/green deployment settings (deployment_ready_option, terminate_blue_instances_on_deployment_success, green_fleet_provisioning_option)"
-  type        = any
-  default     = null
+  type = object({
+    deployment_ready_option = optional(object({
+      action_on_timeout    = optional(string, null)
+      wait_time_in_minutes = optional(number, null)
+    }), null)
+    terminate_blue_instances_on_deployment_success = optional(object({
+      action                           = optional(string, null)
+      termination_wait_time_in_minutes = optional(number, null)
+    }), null)
+    green_fleet_provisioning_option = optional(object({
+      action = optional(string, null)
+    }), null)
+  })
+  default = null
 }
 
 variable "load_balancer_info" {
   description = "Load balancer information for the deployment group (elb_info, target_group_info, target_group_pair_info)"
-  type        = any
-  default     = null
+  type = object({
+    elb_info = optional(list(object({
+      name = string
+    })), [])
+    target_group_info = optional(list(object({
+      name = string
+    })), [])
+    target_group_pair_info = optional(object({
+      prod_traffic_route = object({
+        listener_arns = list(string)
+      })
+      test_traffic_route = optional(object({
+        listener_arns = list(string)
+      }), null)
+      target_group = list(object({
+        name = string
+      }))
+    }), null)
+  })
+  default = null
 }
 
 variable "auto_rollback_enabled" {
@@ -99,26 +129,44 @@ variable "ignore_poll_alarm_failure" {
 
 variable "trigger_configurations" {
   description = "List of trigger configurations (events, name, target_arn)"
-  type        = list(any)
-  default     = []
+  type = list(object({
+    trigger_events     = list(string)
+    trigger_name       = string
+    trigger_target_arn = string
+  }))
+  default = []
 }
 
 variable "ec2_tag_filters" {
   description = "List of EC2 tag filters to select target instances for Server deployments (OR logic)"
-  type        = list(any)
-  default     = []
+  type = list(object({
+    key   = string
+    type  = string
+    value = string
+  }))
+  default = []
 }
 
 variable "ec2_tag_sets" {
   description = "List of EC2 tag sets for Server deployments (AND logic). Each set contains a list of ec2_tag_filters"
-  type        = list(any)
-  default     = []
+  type = list(object({
+    ec2_tag_filters = list(object({
+      key   = string
+      type  = string
+      value = string
+    }))
+  }))
+  default = []
 }
 
 variable "on_premises_instance_tag_filters" {
   description = "List of on-premises instance tag filters to select target instances"
-  type        = list(any)
-  default     = []
+  type = list(object({
+    key   = string
+    type  = string
+    value = string
+  }))
+  default = []
 }
 
 variable "auto_scaling_groups" {

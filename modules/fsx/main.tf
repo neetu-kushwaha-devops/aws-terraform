@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 resource "aws_fsx_lustre_file_system" "this" {
   storage_capacity            = var.storage_capacity
   subnet_ids                  = var.subnet_ids

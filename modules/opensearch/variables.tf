@@ -53,8 +53,19 @@ variable "availability_zone_count" {
 
 variable "cluster_config" {
   description = "Map of cluster configurations to override. Designed for backwards compatibility."
-  type        = any
-  default     = {}
+  type = object({
+    instance_type            = optional(string, null)
+    instance_count           = optional(number, null)
+    dedicated_master_enabled = optional(bool, null)
+    dedicated_master_type    = optional(string, null)
+    dedicated_master_count   = optional(number, null)
+    zone_awareness_enabled   = optional(bool, null)
+    availability_zone_count  = optional(number, null)
+    warm_enabled             = optional(bool, null)
+    warm_type                = optional(string, null)
+    warm_count               = optional(number, null)
+  })
+  default = {}
 }
 
 variable "warm_enabled" {

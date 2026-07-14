@@ -72,8 +72,8 @@ module "dynamodb_table" {
 | `read_capacity` | The number of read units for this table. Value is ignored if billing_mode is PAY_PER_REQUEST | `number` | `null` | no |
 | `write_capacity` | The number of write units for this table. Value is ignored if billing_mode is PAY_PER_REQUEST | `number` | `null` | no |
 | `attributes` | List of nested attribute definitions. Only required for attributes that will be used as hash or range keys in the table or its indexes | `list(object)` | n/a | yes |
-| `global_secondary_indexes` | Describe GSI configurations for the DynamoDB table | `any` | `[]` | no |
-| `local_secondary_indexes` | Describe LSI configurations for the DynamoDB table | `any` | `[]` | no |
+| `global_secondary_indexes` | Describe GSI configurations for the DynamoDB table | `list(object({...}))` | `[]` | no |
+| `local_secondary_indexes` | Describe LSI configurations for the DynamoDB table | `list(object({...}))` | `[]` | no |
 | `stream_enabled` | Indicates whether Streams are enabled (true) or disabled (false) | `bool` | `false` | no |
 | `stream_view_type` | When an item in the table is modified, StreamViewType determines what information is written to the table's stream. Valid values are `KEYS_ONLY`, `NEW_IMAGE`, `OLD_IMAGE`, `NEW_AND_OLD_IMAGES` | `string` | `null` | no |
 | `point_in_time_recovery_enabled` | Enable DynamoDB point-in-time recovery | `bool` | `true` | no |

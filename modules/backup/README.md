@@ -84,10 +84,10 @@ module "aws_backup" {
 | `vault_kms_key_arn` | The server-side encryption key (KMS Key ARN) used to protect your backups | `string` | `null` | no |
 | `vault_policy` | The IAM policy document in JSON format to apply to the AWS Backup vault | `string` | `null` | no |
 | `plan_name` | Name of the AWS Backup plan to create | `string` | n/a | yes |
-| `rules` | List of maps containing backup rules configuration | `any` | `[]` (falls back to daily backup with 30-day retention) | no |
+| `rules` | List of backup rule objects | `list(object({...}))` | `[]` (falls back to daily backup with 30-day retention) | no |
 | `create_iam_role` | Whether to create a new IAM role for AWS Backup. If false, `iam_role_arn` must be provided | `bool` | `true` | no |
 | `iam_role_arn` | The ARN of an existing IAM role to be used by AWS Backup if `create_iam_role` is false | `string` | `null` | no |
-| `selections` | Map of backup selections to apply | `any` | `{}` | no |
+| `selections` | Map of backup selections to apply | `map(object({...}))` | `{}` | no |
 | `tags` | A mapping of tags to assign to the resources | `map(string)` | `{}` | no |
 
 ## Outputs

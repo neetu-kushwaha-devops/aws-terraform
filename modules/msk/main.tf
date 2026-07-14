@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}
+
 resource "aws_msk_configuration" "this" {
   count             = length(var.server_properties) > 0 ? 1 : 0
   name              = "${var.name}-configuration"

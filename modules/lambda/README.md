@@ -94,7 +94,7 @@ module "my_container_lambda" {
 | `cloudwatch_logs_retention_in_days` | Specifies the number of days you want to retain log events in the log group | `number` | `14` | no |
 | `create_function_url` | Whether to create a Lambda Function URL | `bool` | `false` | no |
 | `function_url_auth_type` | The authorization type for the Function URL. Valid values: NONE, AWS_IAM. | `string` | `"NONE"` | no |
-| `function_url_cors` | CORS configuration for the Function URL | `any` | `{}` | no |
+| `function_url_cors` | CORS configuration for the Function URL | `object({...})` | `{}` | no |
 | `tags` | A mapping of tags to assign to the resources | `map(string)` | `{}` | no |
 
 ## Outputs
